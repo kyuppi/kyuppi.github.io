@@ -6,18 +6,22 @@
     <title>店舗管理ログイン</title>
     <style>
         body { font-family: sans-serif; background-color: #eef2f5; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin:0; }
-        .admin-card { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 400px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); box-sizing: border-box; }
+        .admin-card { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); box-sizing: border-box; }
         h2 { color: #2c3e50; text-align: center; margin-top: 0; margin-bottom: 20px; }
         .section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid #4a90e2; }
         .section-title { font-weight: bold; margin-bottom: 10px; color: #333; }
         .toggle-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
         .btn { padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; color: white; background-color: #28a745; }
         .btn.active { background-color: #dc3545; }
+        .del-btn { background: none; border: none; color: #dc3545; cursor: pointer; font-size: 14px; margin-left: 10px; }
         .save-btn { width: 100%; padding: 12px; border: none; border-radius: 6px; background: #4a90e2; color: white; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        input[type="password"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        input[type="password"], input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
         #login-form { display: block; }
         #admin-panel { display: none; }
         .sub { text-align: center; font-size: 12px; color: #7f8c8d; margin-bottom: 20px; }
+        .add-box { display: flex; gap: 10px; margin-bottom: 15px; }
+        .add-box input { margin-bottom: 0; }
+        .add-box button { background: #28a745; color: white; border: none; padding: 0 15px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -42,6 +46,14 @@
         </div>
 
         <div class="section">
+            <div class="section-title">➕ 新しいメニューの追加</div>
+            <div class="add-box">
+                <input type="text" id="new-menu-name" placeholder="メニュー名（例: 特製ラーメン）">
+                <button onclick="addCustomMenu()">追加</button>
+            </div>
+        </div>
+
+        <div class="section">
             <div class="section-title">🍳 メニュー売り切れ設定</div>
             <div class="toggle-box">
                 <span>コースA（通常プラン）</span>
@@ -55,6 +67,8 @@
                 <span>席のみのご予約</span>
                 <button id="btn-menuC" class="btn" onclick="toggle('soldOutC')">販売中</button>
             </div>
+            <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+            <div id="custom-menu-list"></div>
         </div>
 
         <button id="save-btn" class="save-btn" onclick="saveToCloud()">設定を保存して公開する</button>
@@ -62,34 +76,29 @@
 </div>
 
 <script>
-    const PASSWORD = '1234'; // 💡 ログイン用パスワード
+    const PASSWORD = '1234'; 
     const BIN_ID = '6584289a0574da7622da443d';
     const KEY = '$2a$10$wN9D9aJID76bN7N0/C6yUe0FwN7O.Z3VjUo88.ZqgY8S32eKeZJu6';
 
-    let currentStatus = { isHoliday: false, soldOutA: false, soldOutB: false, soldOutC: false };
+    let currentStatus = { isHoliday: false, soldOutA: false, soldOutB: false, soldOutC: false, customMenus: [] };
 
-    // パスワードチェック
     function checkPassword() {
         const input = document.getElementById('password-input').value;
         if (input === PASSWORD) {
             document.getElementById('login-form').style.display = 'none';
             document.getElementById('admin-panel').style.display = 'block';
             fetchCurrentSettings();
-        } else {
-            alert('パスワードが違います');
-        }
+        } else { alert('パスワードが違います'); }
     }
 
-    // 今のクラウド設定を読み込む
     async function fetchCurrentSettings() {
         try {
             const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': KEY } });
             const data = await res.json();
             currentStatus = data.record;
+            if (!currentStatus.customMenus) { currentStatus.customMenus = []; }
             render();
-        } catch (e) {
-            alert('データの読み込みに失敗しました');
-        }
+        } catch (e) { alert('データの読み込みに失敗しました'); }
     }
 
     function toggle(key) {
@@ -97,11 +106,64 @@
         render();
     }
 
+    // 💡 メニューを新しく追加する処理
+    function addCustomMenu() {
+        const input = document.getElementById('new-menu-name');
+        const name = input.value.trim();
+        if (!name) return alert('メニュー名を入力してください');
+        
+        currentStatus.customMenus.push({ name: name, isSoldOut: false });
+        input.value = '';
+        render();
+    }
+
+    // 💡 追加したメニューの売り切れを切り替える処理
+    function toggleCustomMenu(index) {
+        currentStatus.customMenus[index].isSoldOut = !currentStatus.customMenus[index].isSoldOut;
+        render();
+    }
+
+    // 💡 追加したメニューを削除する処理
+    function deleteCustomMenu(index) {
+        if (confirm('このメニューを完全に削除しますか？')) {
+            currentStatus.customMenus.splice(index, 1);
+            render();
+        }
+    }
+
     function render() {
+        // 定番のボタン状態
         btnState('btn-holiday', currentStatus.isHoliday, '臨時休業中', '通常営業中');
         btnState('btn-menuA', currentStatus.soldOutA, '売り切れ', '販売中');
         btnState('btn-menuB', currentStatus.soldOutB, '売り切れ', '販売中');
         btnState('btn-menuC', currentStatus.soldOutC, '売り切れ', '販売中');
+
+        // 追加されたカスタムメニューのボタンを生成して並べる
+        const listContainer = document.getElementById('custom-menu-list');
+        listContainer.innerHTML = '';
+        
+        currentStatus.customMenus.forEach((menu, index) => {
+            const box = document.createElement('div');
+            box.className = 'toggle-box';
+            
+            const textWrap = document.createElement('span');
+            textWrap.innerText = menu.name;
+            
+            const delBtn = document.createElement('button');
+            delBtn.className = 'del-btn';
+            delBtn.innerText = '✕ 削除';
+            delBtn.onclick = () => deleteCustomMenu(index);
+            textWrap.appendChild(delBtn);
+
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = menu.isSoldOut ? 'btn active' : 'btn';
+            toggleBtn.innerText = menu.isSoldOut ? '売り切れ' : '販売中';
+            toggleBtn.onclick = () => toggleCustomMenu(index);
+
+            box.appendChild(textWrap);
+            box.appendChild(toggleBtn);
+            listContainer.appendChild(box);
+        });
     }
 
     function btnState(id, active, activeText, inactiveText) {
@@ -110,11 +172,9 @@
         else { b.classList.remove('active'); b.innerText = inactiveText; }
     }
 
-    // ✨ リアルタイムに世界中へ同期保存する処理
     async function saveToCloud() {
         const saveBtn = document.getElementById('save-btn');
-        saveBtn.innerText = '保存中...';
-        saveBtn.disabled = true;
+        saveBtn.innerText = '保存中...'; saveBtn.disabled = true;
 
         try {
             await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
@@ -122,12 +182,11 @@
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': KEY },
                 body: JSON.stringify(currentStatus)
             });
-            alert('保存完了！お客様画面（すべてのスマホ）にリアルタイムで反映されました！');
+            alert('保存完了！追加したメニューも含めてすべてのお客様画面にリアルタイム反映されました！');
         } catch (e) {
-            alert('保存に失敗しました。ネット環境を確認してください。');
+            alert('保存に失敗しました。');
         } finally {
-            saveBtn.innerText = '設定を保存して公開する';
-            saveBtn.disabled = false;
+            saveBtn.innerText = '設定を保存して公開する'; saveBtn.disabled = false;
         }
     }
 </script>
