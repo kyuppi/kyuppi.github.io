@@ -3,25 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>店舗管理ログイン</title>
+    <title>店舗管理画面 - 総合コントロールパネル</title>
     <style>
-        body { font-family: sans-serif; background-color: #eef2f5; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin:0; }
-        .admin-card { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); box-sizing: border-box; }
-        h2 { color: #2c3e50; text-align: center; margin-top: 0; margin-bottom: 20px; }
+        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: #eef2f5; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin:0; }
+        .admin-card { background: white; padding: 30px; border-radius: 12px; width: 100%; max-width: 450px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; text-align: center; margin-bottom: 20px; }
         .section { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 15px; border-left: 5px solid #4a90e2; }
-        .section-title { font-weight: bold; margin-bottom: 10px; color: #333; }
-        .toggle-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
-        .btn { padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; color: white; background-color: #28a745; }
+        .section-title { font-weight: bold; margin-bottom: 10px; color: #333; display: flex; align-items: center; }
+        .toggle-box { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 8px 0; border-bottom: 1px solid #eee; }
+        .btn { padding: 8px 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; color: white; background-color: #28a745; transition: 0.2s; }
         .btn.active { background-color: #dc3545; }
-        .del-btn { background: none; border: none; color: #dc3545; cursor: pointer; font-size: 14px; margin-left: 10px; }
-        .save-btn { width: 100%; padding: 12px; border: none; border-radius: 6px; background: #4a90e2; color: white; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 10px; }
-        input[type="password"], input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; font-size: 16px; }
+        .del-btn { background: #ff4d4d; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; margin-left: 10px; }
+        .save-btn { width: 100%; padding: 14px; border: none; border-radius: 6px; background: #007bff; color: white; font-weight: bold; font-size: 16px; cursor: pointer; margin-top: 20px; transition: 0.2s; }
+        .save-btn:disabled { background: #ccc; cursor: not-allowed; }
+        input[type="password"], input[type="text"] { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        .add-box { display: flex; gap: 10px; }
         #login-form { display: block; }
         #admin-panel { display: none; }
-        .sub { text-align: center; font-size: 12px; color: #7f8c8d; margin-bottom: 20px; }
-        .add-box { display: flex; gap: 10px; margin-bottom: 15px; }
-        .add-box input { margin-bottom: 0; }
-        .add-box button { background: #28a745; color: white; border: none; padding: 0 15px; border-radius: 6px; font-weight: bold; cursor: pointer; white-space: nowrap; }
     </style>
 </head>
 <body>
@@ -34,40 +32,28 @@
     </div>
 
     <div id="admin-panel">
-        <h2>店舗管理画面</h2>
-        <div class="sub">変更したら一番下の保存ボタンを押してください</div>
+        <h2>店舗管理パネル</h2>
         
         <div class="section">
             <div class="section-title">🛑 営業ステータス</div>
             <div class="toggle-box">
-                <span>臨時休業にする</span>
+                <span>臨時休業モード</span>
                 <button id="btn-holiday" class="btn" onclick="toggle('isHoliday')">通常営業中</button>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">➕ 新しいメニューの追加</div>
+            <div class="section-title">➕ メニュー追加</div>
             <div class="add-box">
-                <input type="text" id="new-menu-name" placeholder="メニュー名（例: 特製ラーメン）">
-                <button onclick="addCustomMenu()">追加</button>
+                <input type="text" id="new-menu-name" placeholder="メニュー名">
+                <button class="btn" onclick="addCustomMenu()">追加</button>
             </div>
         </div>
 
         <div class="section">
-            <div class="section-title">🍳 メニュー売り切れ設定</div>
-            <div class="toggle-box">
-                <span>コースA（通常プラン）</span>
-                <button id="btn-menuA" class="btn" onclick="toggle('soldOutA')">販売中</button>
-            </div>
-            <div class="toggle-box">
-                <span>コースB（プレミアム）</span>
-                <button id="btn-menuB" class="btn" onclick="toggle('soldOutB')">販売中</button>
-            </div>
-            <div class="toggle-box">
-                <span>席のみのご予約</span>
-                <button id="btn-menuC" class="btn" onclick="toggle('soldOutC')">販売中</button>
-            </div>
-            <hr style="border: 0; border-top: 1px solid #ddd; margin: 15px 0;">
+            <div class="section-title">🍳 売り切れ設定</div>
+            <div class="toggle-box"><span>コースA</span><button id="btn-menuA" class="btn" onclick="toggle('soldOutA')">販売中</button></div>
+            <div class="toggle-box"><span>コースB</span><button id="btn-menuB" class="btn" onclick="toggle('soldOutB')">販売中</button></div>
             <div id="custom-menu-list"></div>
         </div>
 
@@ -76,124 +62,56 @@
 </div>
 
 <script>
-    const PASSWORD = '1234'; 
+    const PASSWORD = '1234';
+    const BIN_ID = '6584289a0574da7622da443d';
     const KEY = '$2a$10$wN9D9aJID76bN7N0/C6yUe0FwN7O.Z3VjUo88.ZqgY8S32eKeZJu6';
-
-    let currentStatus = { isHoliday: false, soldOutA: false, soldOutB: false, soldOutC: false, customMenus: [] };
+    let data = { isHoliday: false, soldOutA: false, soldOutB: false, customMenus: [] };
 
     function checkPassword() {
-        const input = document.getElementById('password-input').value;
-        if (input === PASSWORD) {
+        if(document.getElementById('password-input').value === PASSWORD) {
             document.getElementById('login-form').style.display = 'none';
             document.getElementById('admin-panel').style.display = 'block';
-            fetchCurrentSettings();
+            fetchData();
         } else { alert('パスワードが違います'); }
     }
 
-    // 💡 ローカルストレージを箱の代わりにしつつ、いつでもクリーンに起動する仕組み
-    async function fetchCurrentSettings() {
-        const saved = localStorage.getItem('shop_system_status');
-        if (saved) {
-            try {
-                currentStatus = JSON.parse(saved);
-                if (!currentStatus.customMenus) { currentStatus.customMenus = []; }
-            } catch(e) {
-                console.log("No valid saved data, using default.");
-            }
-        }
+    async function fetchData() {
+        const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {headers: {'X-Master-Key': KEY}});
+        data = (await res.json()).record;
         render();
     }
 
-    function toggle(key) {
-        currentStatus[key] = !currentStatus[key];
-        render();
-    }
-
+    function toggle(key) { data[key] = !data[key]; render(); }
     function addCustomMenu() {
-        const input = document.getElementById('new-menu-name');
-        const name = input.value.trim();
-        if (!name) return alert('メニュー名を入力してください');
-        
-        currentStatus.customMenus.push({ name: name, isSoldOut: false });
-        input.value = '';
+        const name = document.getElementById('new-menu-name').value.trim();
+        if(!name) return;
+        data.customMenus.push({name: name, soldOut: false});
+        document.getElementById('new-menu-name').value = '';
         render();
     }
-
-    function toggleCustomMenu(index) {
-        currentStatus.customMenus[index].isSoldOut = !currentStatus.customMenus[index].isSoldOut;
-        render();
-    }
-
-    function deleteCustomMenu(index) {
-        if (confirm('このメニューを完全に削除しますか？')) {
-            currentStatus.customMenus.splice(index, 1);
-            render();
-        }
-    }
-
+    function delMenu(i) { data.customMenus.splice(i, 1); render(); }
+    
     function render() {
-        btnState('btn-holiday', currentStatus.isHoliday, '臨時休業中', '通常営業中');
-        btnState('btn-menuA', currentStatus.soldOutA, '売り切れ', '販売中');
-        btnState('btn-menuB', currentStatus.soldOutB, '売り切れ', '販売中');
-        btnState('btn-menuC', currentStatus.soldOutC, '売り切れ', '販売中');
-
-        const listContainer = document.getElementById('custom-menu-list');
-        listContainer.innerHTML = '';
+        document.getElementById('btn-holiday').className = 'btn ' + (data.isHoliday ? 'active' : '');
+        document.getElementById('btn-holiday').innerText = data.isHoliday ? '休業中' : '通常営業中';
+        document.getElementById('btn-menuA').className = 'btn ' + (data.soldOutA ? 'active' : '');
+        document.getElementById('btn-menuA').innerText = data.soldOutA ? '売り切れ' : '販売中';
+        document.getElementById('btn-menuB').className = 'btn ' + (data.soldOutB ? 'active' : '');
+        document.getElementById('btn-menuB').innerText = data.soldOutB ? '売り切れ' : '販売中';
         
-        if (currentStatus.customMenus) {
-            currentStatus.customMenus.forEach((menu, index) => {
-                const box = document.createElement('div');
-                box.className = 'toggle-box';
-                
-                const textWrap = document.createElement('span');
-                textWrap.innerText = menu.name;
-                
-                const delBtn = document.createElement('button');
-                delBtn.className = 'del-btn';
-                delBtn.innerText = '✕ 削除';
-                delBtn.onclick = () => deleteCustomMenu(index);
-                textWrap.appendChild(delBtn);
-
-                const toggleBtn = document.createElement('button');
-                toggleBtn.className = menu.isSoldOut ? 'btn active' : 'btn';
-                toggleBtn.innerText = menu.isSoldOut ? '売り切れ' : '販売中';
-                toggleBtn.onclick = () => toggleCustomMenu(index);
-
-                box.appendChild(textWrap);
-                box.appendChild(toggleBtn);
-                listContainer.appendChild(box);
-            });
-        }
+        let list = document.getElementById('custom-menu-list');
+        list.innerHTML = '';
+        data.customMenus.forEach((m, i) => {
+            list.innerHTML += `<div class="toggle-box"><span>${m.name}</span><div><button class="btn ${m.soldOut ? 'active' : ''}" onclick="data.customMenus[${i}].soldOut=!data.customMenus[${i}].soldOut; render();">${m.soldOut ? '売り切れ' : '販売中'}</button><button class="del-btn" onclick="delMenu(${i})">✕</button></div></div>`;
+        });
     }
 
-    function btnState(id, active, activeText, inactiveText) {
-        const b = document.getElementById(id);
-        if (active) { b.classList.add('active'); b.innerText = activeText; }
-        else { b.classList.remove('active'); b.innerText = inactiveText; }
-    }
-
-    // 💡 お店の端末にガツンと設定を保存する処理
     async function saveToCloud() {
-        const saveBtn = document.getElementById('save-btn');
-        saveBtn.innerText = '保存中...'; saveBtn.disabled = true;
-
-        try {
-            // ローカルに状態を完全記憶
-            localStorage.setItem('shop_system_status', JSON.stringify(currentStatus));
-            
-            // クラウド上の共有箱にも強制的に同じ状態を上書き同期
-            await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json', 'X-Master-Key': KEY },
-                body: JSON.stringify(currentStatus)
-            });
-            alert('保存完了！追加したメニューも含めてすべてのお客様画面にリアルタイム反映されました！');
-        } catch (e) {
-            // クラウド側で何があっても、お店のローカルデータで動作を保証
-            alert('保存完了！設定がお客様画面に適用されました！');
-        } finally {
-            saveBtn.innerText = '設定を保存して公開する'; saveBtn.disabled = false;
-        }
+        const btn = document.getElementById('save-btn');
+        btn.disabled = true; btn.innerText = '保存中...';
+        await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, { method: 'PUT', headers: {'Content-Type': 'application/json', 'X-Master-Key': KEY}, body: JSON.stringify(data) });
+        alert('保存完了！お客様画面に即時反映されました');
+        btn.disabled = false; btn.innerText = '設定を保存して公開する';
     }
 </script>
 </body>
