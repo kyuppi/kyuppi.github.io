@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ご予約フォーム</title>
+    <title>ご予約・ご注文フォーム</title>
     <style>
         :root {
             --primary-color: #4a90e2;
@@ -109,13 +109,13 @@
 <body>
 
 <div class="reservation-card">
-    <h2>オンライン予約</h2>
+    <h2>オンライン予約・ご注文</h2>
     
     <form action="https://formsubmit.co/kyuppi000@gmail.com" method="POST">
         
         <input type="hidden" name="_captcha" value="false">
         
-        <input type="hidden" name="_subject" value="【自動通知】新しい予約の申し込みが入りました！">
+        <input type="hidden" name="_subject" value="【自動通知】新しい予約・注文の申し込みが入りました！">
 
         <div class="form-group">
             <label for="name">お名前 <span style="color: red;">*</span></label>
@@ -133,8 +133,19 @@
         </div>
 
         <div class="form-group">
-            <label for="datetime">ご予約日時 <span style="color: red;">*</span></label>
-            <input type="datetime-local" id="datetime" name="ご予約日時" required>
+            <label for="datetime">ご希望日時 <span style="color: red;">*</span></label>
+            <input type="datetime-local" id="datetime" name="ご希望日時" required>
+        </div>
+
+        <div class="form-group">
+            <label for="order-select">ご注文・ご予約内容 <span style="color: red;">*</span></label>
+            <select id="order-select" name="注文・予約内容" required>
+                <option value="" disabled selected>選択してください</option>
+                <option value="コースA（通常プラン）">コースA（通常プラン）</option>
+                <option value="コースB（プレミアムプラン）">コースB（プレミアムプラン）</option>
+                <option value="席のみのご予約">席のみのご予約</option>
+                <option value="その他（備考欄に記載）">その他（備考欄に記載）</option>
+            </select>
         </div>
 
         <div class="form-group">
@@ -151,14 +162,14 @@
 
         <div class="form-group">
             <label for="comments">ご要望・備考欄</label>
-            <textarea id="comments" name="ご要望・備考" placeholder="アレルギーや、ご質問があれば入力してください。"></textarea>
+            <textarea id="comments" name="ご要望・備考" placeholder="具体的な注文内容、アレルギー、その他ご質問があれば入力してください。"></textarea>
         </div>
 
-        <button type="submit" class="submit-btn">予約を確定する</button>
+        <button type="submit" class="submit-btn">予約・注文を確定する</button>
     </form>
     
     <div class="footer-note">
-        ※ボタンを押すと予約内容がお店のGmail宛てに送信されます。
+        ※ボタンを押すと内容がお店のGmail宛てに送信されます。
     </div>
 </div>
 
