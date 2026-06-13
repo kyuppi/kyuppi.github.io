@@ -1,0 +1,52 @@
+body{
+    margin:0;
+    font-family:sans-serif;
+    background:#f7f7f7;
+}
+
+header{
+    background:#ff7a00;
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+
+main{
+    max-width:800px;
+    margin:auto;
+    padding:20px;
+}
+
+.menu,
+.booking{
+    background:white;
+    padding:20px;
+    border-radius:10px;
+    margin-bottom:20px;
+}
+
+.item{
+    border-bottom:1px solid #ddd;
+    padding:10px 0;
+}
+
+form{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+input,
+select,
+textarea,
+button{
+    padding:12px;
+    font-size:16px;
+}
+
+button{
+    background:#ff7a00;
+    color:white;
+    border:none;
+    cursor:pointer;
+}
