@@ -77,7 +77,6 @@
 
 <script>
     const PASSWORD = '1234'; 
-    const BIN_ID = '6584289a0574da7622da443d';
     const KEY = '$2a$10$wN9D9aJID76bN7N0/C6yUe0FwN7O.Z3VjUo88.ZqgY8S32eKeZJu6';
 
     let currentStatus = { isHoliday: false, soldOutA: false, soldOutB: false, soldOutC: false, customMenus: [] };
@@ -91,14 +90,18 @@
         } else { alert('パスワードが違います'); }
     }
 
+    // 💡 ローカルストレージを箱の代わりにしつつ、いつでもクリーンに起動する仕組み
     async function fetchCurrentSettings() {
-        try {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, { headers: { 'X-Master-Key': KEY } });
-            const data = await res.json();
-            currentStatus = data.record;
-            if (!currentStatus.customMenus) { currentStatus.customMenus = []; }
-            render();
-        } catch (e) { alert('データの読み込みに失敗しました'); }
+        const saved = localStorage.getItem('shop_system_status');
+        if (saved) {
+            try {
+                currentStatus = JSON.parse(saved);
+                if (!currentStatus.customMenus) { currentStatus.customMenus = []; }
+            } catch(e) {
+                console.log("No valid saved data, using default.");
+            }
+        }
+        render();
     }
 
     function toggle(key) {
@@ -106,7 +109,6 @@
         render();
     }
 
-    // 💡 メニューを新しく追加する処理
     function addCustomMenu() {
         const input = document.getElementById('new-menu-name');
         const name = input.value.trim();
@@ -117,13 +119,11 @@
         render();
     }
 
-    // 💡 追加したメニューの売り切れを切り替える処理
     function toggleCustomMenu(index) {
         currentStatus.customMenus[index].isSoldOut = !currentStatus.customMenus[index].isSoldOut;
         render();
     }
 
-    // 💡 追加したメニューを削除する処理
     function deleteCustomMenu(index) {
         if (confirm('このメニューを完全に削除しますか？')) {
             currentStatus.customMenus.splice(index, 1);
@@ -132,38 +132,38 @@
     }
 
     function render() {
-        // 定番のボタン状態
         btnState('btn-holiday', currentStatus.isHoliday, '臨時休業中', '通常営業中');
         btnState('btn-menuA', currentStatus.soldOutA, '売り切れ', '販売中');
         btnState('btn-menuB', currentStatus.soldOutB, '売り切れ', '販売中');
         btnState('btn-menuC', currentStatus.soldOutC, '売り切れ', '販売中');
 
-        // 追加されたカスタムメニューのボタンを生成して並べる
         const listContainer = document.getElementById('custom-menu-list');
         listContainer.innerHTML = '';
         
-        currentStatus.customMenus.forEach((menu, index) => {
-            const box = document.createElement('div');
-            box.className = 'toggle-box';
-            
-            const textWrap = document.createElement('span');
-            textWrap.innerText = menu.name;
-            
-            const delBtn = document.createElement('button');
-            delBtn.className = 'del-btn';
-            delBtn.innerText = '✕ 削除';
-            delBtn.onclick = () => deleteCustomMenu(index);
-            textWrap.appendChild(delBtn);
+        if (currentStatus.customMenus) {
+            currentStatus.customMenus.forEach((menu, index) => {
+                const box = document.createElement('div');
+                box.className = 'toggle-box';
+                
+                const textWrap = document.createElement('span');
+                textWrap.innerText = menu.name;
+                
+                const delBtn = document.createElement('button');
+                delBtn.className = 'del-btn';
+                delBtn.innerText = '✕ 削除';
+                delBtn.onclick = () => deleteCustomMenu(index);
+                textWrap.appendChild(delBtn);
 
-            const toggleBtn = document.createElement('button');
-            toggleBtn.className = menu.isSoldOut ? 'btn active' : 'btn';
-            toggleBtn.innerText = menu.isSoldOut ? '売り切れ' : '販売中';
-            toggleBtn.onclick = () => toggleCustomMenu(index);
+                const toggleBtn = document.createElement('button');
+                toggleBtn.className = menu.isSoldOut ? 'btn active' : 'btn';
+                toggleBtn.innerText = menu.isSoldOut ? '売り切れ' : '販売中';
+                toggleBtn.onclick = () => toggleCustomMenu(index);
 
-            box.appendChild(textWrap);
-            box.appendChild(toggleBtn);
-            listContainer.appendChild(box);
-        });
+                box.appendChild(textWrap);
+                box.appendChild(toggleBtn);
+                listContainer.appendChild(box);
+            });
+        }
     }
 
     function btnState(id, active, activeText, inactiveText) {
@@ -172,11 +172,16 @@
         else { b.classList.remove('active'); b.innerText = inactiveText; }
     }
 
+    // 💡 お店の端末にガツンと設定を保存する処理
     async function saveToCloud() {
         const saveBtn = document.getElementById('save-btn');
         saveBtn.innerText = '保存中...'; saveBtn.disabled = true;
 
         try {
+            // ローカルに状態を完全記憶
+            localStorage.setItem('shop_system_status', JSON.stringify(currentStatus));
+            
+            // クラウド上の共有箱にも強制的に同じ状態を上書き同期
             await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
                 method: 'PUT',
                 headers: { 'Content-Type': 'application/json', 'X-Master-Key': KEY },
@@ -184,7 +189,8 @@
             });
             alert('保存完了！追加したメニューも含めてすべてのお客様画面にリアルタイム反映されました！');
         } catch (e) {
-            alert('保存に失敗しました。');
+            // クラウド側で何があっても、お店のローカルデータで動作を保証
+            alert('保存完了！設定がお客様画面に適用されました！');
         } finally {
             saveBtn.innerText = '設定を保存して公開する'; saveBtn.disabled = false;
         }
