@@ -3,21 +3,110 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>オンライン予約・ご注文</title>
+    <title>オンライン予約・ご注文フォーム</title>
     <style>
-        :root { --primary-color: #4a90e2; --background-color: #f5f7fa; --card-background: #ffffff; --text-color: #333333; --border-color: #e1e4e8; }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        .reservation-card { background: var(--card-background); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); width: 100%; max-width: 500px; }
-        h2, .subtitle { text-align: center; margin: 0; }
-        h2 { color: #2c3e50; font-size: 24px; }
-        .subtitle { color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
-        .notice-banner { background-color: #fff3cd; border-left: 4px solid #ffc107; color: #856404; padding: 12px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; display: none; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; color: #555; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 100px; }
-        .submit-btn { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        .footer-note { text-align: center; font-size: 12px; color: #999; margin-top: 20px; }
+        :root {
+            --primary-color: #4a90e2;
+            --background-color: #f5f7fa;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --border-color: #e1e4e8;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .reservation-card {
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 5px;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            font-size: 14px;
+            margin-bottom: 25px;
+        }
+
+        /* 🛑 臨時休業お知らせバナー */
+        .notice-banner {
+            background-color: #fff3cd;
+            border-left: 4px solid #ffc107;
+            color: #856404;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -30,7 +119,7 @@
     
     <form action="https://formsubmit.co/kyuppi000@gmail.com" method="POST">
         <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_subject" value="【自動通知】新しい予約・注文が入りました！">
+        <input type="hidden" name="_subject" value="【自動通知】新しい予約・注文の申し込みが入りました！">
 
         <div class="form-group">
             <label>お名前 *</label>
@@ -63,45 +152,60 @@
         </div>
 
         <div class="form-group">
+            <label>ご利用人数 *</label>
+            <select name="ご利用人数" required>
+                <option value="" disabled selected>選択してください</option>
+                <option value="1名">1名</option>
+                <option value="2名">2名</option>
+                <option value="3名">3名</option>
+                <option value="4名">4名</option>
+                <option value="5名以上">5名以上</option>
+            </select>
+        </div>
+
+        <div class="form-group">
             <label>ご要望・備考欄</label>
             <textarea name="ご要望・備考" placeholder="アレルギーなどがあればご記入ください。"></textarea>
         </div>
 
-        <button type="submit" class="submit-btn" id="submit-btn">予約を確定する</button>
+        <button type="submit" class="submit-btn" id="submit-btn">予約・注文を確定する</button>
     </form>
-    <div class="footer-note">※ボタンを押すと予約内容がお店のGmail宛てに送信されます。</div>
+    
+    <div class="footer-note">
+        ※ボタンを押すと内容がお店のGmail宛てに送信されます。
+    </div>
 </div>
 
 <script>
-    // 管理画面からの設定を読み込んで反映する
-    function reflectAdminSettings() {
-        // 臨時休業のチェック
-        const isHoliday = localStorage.getItem('isHoliday') === 'true';
-        const holidayNotice = document.getElementById('holiday-notice');
-        const submitBtn = document.getElementById('submit-btn');
-        if (isHoliday) {
-            holidayNotice.style.display = 'block';
-            submitBtn.disabled = true;
-            submitBtn.style.backgroundColor = '#ccc';
-            submitBtn.innerText = 'ただいま休業中です';
-        }
+    // 誰のスマホから開いても、リアルタイムに管理画面の設定を同期するシステム
+    const BIN_ID = '6584289a0574da7622da443d'; 
+    
+    async function loadSettings() {
+        try {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+                headers: { 'X-Master-Key': '$2a$10$wN9D9aJID76bN7N0/C6yUe0FwN7O.Z3VjUo88.ZqgY8S32eKeZJu6' }
+            });
+            const data = await res.json();
+            const status = data.record;
 
-        // 売り切れのチェック
-        if (localStorage.getItem('soldOutA') === 'true') {
-            const m = document.getElementById('menu-A');
-            m.disabled = true; m.innerText += '（売り切れ）';
-        }
-        if (localStorage.getItem('soldOutB') === 'true') {
-            const m = document.getElementById('menu-B');
-            m.disabled = true; m.innerText += '（売り切れ）';
-        }
-        if (localStorage.getItem('soldOutC') === 'true') {
-            const m = document.getElementById('menu-C');
-            m.disabled = true; m.innerText += '（売り切れ）';
+            // 臨時休業の反映
+            if (status.isHoliday) {
+                document.getElementById('holiday-notice').style.display = 'block';
+                const btn = document.getElementById('submit-btn');
+                btn.disabled = true;
+                btn.style.backgroundColor = '#ccc';
+                btn.innerText = 'ただいま休業中です';
+            }
+
+            // 売り切れの反映
+            if (status.soldOutA) { const m = document.getElementById('menu-A'); m.disabled = true; m.innerText += '（売り切れ）'; }
+            if (status.soldOutB) { const m = document.getElementById('menu-B'); m.disabled = true; m.innerText += '（売り切れ）'; }
+            if (status.soldOutC) { const m = document.getElementById('menu-C'); m.disabled = true; m.innerText += '（売り切れ）'; }
+        } catch (e) {
+            console.error("設定の読み込みに失敗しました", e);
         }
     }
-    window.onload = reflectAdminSettings;
+    window.onload = loadSettings;
 </script>
 </body>
 </html>
-
