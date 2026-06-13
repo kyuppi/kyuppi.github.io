@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>レストラン予約システム - 管理画面</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="admin-body">
+    <div class="container">
+        <header>
+            <h1>店舗管理システム</h1>
+            <p class="subtitle">メニュー編集・各種コントロール</p>
+        </header>
+
+        <main>
+            <section id="login-section" class="booking-card admin-card">
+                <h2>管理者・店員ログイン</h2>
+                <p class="instruction">セキュリティ保護のため、パスワードを入力してください。</p>
+                <div class="form-group">
+                    <input type="password" id="admin-password" placeholder="初期パスワード: admin123">
+                    <span id="login-error" class="error-message" style="display: none;">パスワードが正しくありません。</span>
+                </div>
+                <button type="button" id="btn-login" class="btn btn-primary">ログイン</button>
+            </section>
+
+            <section id="management-section" class="booking-card admin-card" style="display: none;">
+                <div class="admin-header">
+                    <h2>コントロールパネル</h2>
+                    <button type="button" id="btn-logout" class="btn btn-secondary">ログアウト</button>
+                </div>
+                
+                <div class="setting-block" style="border-left: 5px solid #ff9f43;">
+                    <h3>🍔 メニュー（商品）のマスター編集</h3>
+                    <p class="block-desc">お店で提供するメニュー自体を追加・削除できます。ここで設定したメニューが予約画面や店員用画面に自動反映されます。</p>
+                    <div class="form-inline">
+                        <input type="text" id="new-menu-name" placeholder="例：特製オムライス、炭火焼ハンバーグ">
+                        <button type="button" id="btn-add-menu" class="btn btn-primary" style="background-color: #ff9f43;">メニュー登録</button>
+                    </div>
+                    <h4>登録中のメニュー一覧</h4>
+                    <ul id="admin-menu-list" class="data-list"></ul>
+                </div>
+
+                <div class="setting-block" style="border-left: 5px solid #3182ce;">
+                    <h3>📞 店員用・直接予約入力</h3>
+                    <p class="block-desc">電話予約など、店員が手動で予約を登録できます。（メニューは上記で登録したものが選べます）</p>
+                    <form id="admin-reserve-form">
+                        <div class="form-inline" style="margin-bottom: 10px;">
+                            <input type="date" id="admin-res-date" required>
+                            <select id="admin-res-time" required>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="18:00">18:00</option>
+                                <option value="19:00">19:00</option>
+                            </select>
+                        </div>
+                        <div class="form-inline" style="margin-bottom: 10px;">
+                            <select id="admin-res-menu" required></select>
+                            <select id="admin-res-guests" required>
+                                <option value="1">1名</option>
+                                <option value="2">2名</option>
+                                <option value="3">3名</option>
+                                <option value="4">4名</option>
+                                <option value="5">5名</option>
+                            </select>
+                        </div>
+                        <div class="form-inline" style="margin-bottom: 10px;">
+                            <input type="text" id="admin-res-name" placeholder="お客様のお名前" required>
+                            <input type="tel" id="admin-res-phone" placeholder="電話番号" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary" style="background-color: #3182ce;">予約を登録する</button>
+                    </form>
+                </div>
+
+                <div class="setting-block" style="border-left: 5px solid #38a169;">
+                    <h3>📋 予約一覧（予約台帳）</h3>
+                    <ul id="admin-reservation-list" class="data-list" style="max-height: 200px;"></ul>
+                </div>
+
+                <div class="setting-block">
+                    <h3>📅 臨時休業日の設定</h3>
+                    <div class="form-inline">
+                        <input type="date" id="holiday-date">
+                        <button type="button" id="btn-add-holiday" class="btn btn-primary">休業日を追加</button>
+                    </div>
+                    <ul id="holiday-list" class="data-list"></ul>
+                </div>
+
+                <div class="setting-block">
+                    <h3>❌ 商品の売り切れ設定</h3>
+                    <p class="block-desc">特定の日付で「売り切れ」にする商品を設定します。</p>
+                    <div class="form-inline">
+                        <input type="date" id="soldout-date">
+                        <select id="soldout-item-name"></select>
+                        <button type="button" id="btn-add-soldout" class="btn btn-danger">売り切れに設定</button>
+                    </div>
+                    <ul id="soldout-list" class="data-list"></ul>
+                </div>
+            </section>
+        </main>
+    </div>
+    <script src="js/admin.js"></script>
+</body>
+</html>
