@@ -3,75 +3,164 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>レストラン予約システム - ご予約画面</title>
-    <link rel="stylesheet" href="css/style.css">
+    <title>ご予約フォーム</title>
+    <style>
+        :root {
+            --primary-color: #4a90e2;
+            --background-color: #f5f7fa;
+            --card-background: #ffffff;
+            --text-color: #333333;
+            --border-color: #e1e4e8;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        .reservation-card {
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        h2 {
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 25px;
+            color: #2c3e50;
+            font-size: 24px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 14px;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="tel"],
+        input[type="email"],
+        input[type="datetime-local"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .submit-btn {
+            width: 100%;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #357abd;
+        }
+
+        .footer-note {
+            text-align: center;
+            font-size: 12px;
+            color: #999;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container">
-        <header>
-            <div class="logo">RESTAURANT NAME</div>
-            <p class="subtitle">オンライン予約システム</p>
-        </header>
 
-        <main>
-            <section class="booking-card">
-                <h2>ご予約情報の入力</h2>
-                <p class="notice">※グレーアウトしている日付は臨時休業日です。売り切れの商品は選択できません。</p>
-                
-                <form id="reserve-form">
-                    <div class="form-group">
-                        <label for="reserve-date">1. ご来店日の選択</label>
-                        <input type="date" id="reserve-date" required>
-                        <span id="date-message" class="error-message"></span>
-                    </div>
+<div class="reservation-card">
+    <h2>オンライン予約</h2>
+    
+    <form action="https://formsubmit.co/あなたのGmailアドレス@gmail.com" method="POST">
+        
+        <input type="hidden" name="_captcha" value="false">
+        
+        <input type="hidden" name="_subject" value="【自動通知】新しい予約の申し込みが入りました！">
 
-                    <div class="form-group">
-                        <label for="reserve-time">2. ご来店時間の選択</label>
-                        <select id="reserve-time" required disabled>
-                            <option value="">日付を先に選択してください</option>
-                        </select>
-                    </div>
+        <div class="form-group">
+            <label for="name">お名前 <span style="color: red;">*</span></label>
+            <input type="text" id="name" name="お名前" placeholder="山田 太郎" required>
+        </div>
 
-                    <div class="form-group">
-                        <label for="reserve-menu">3. ご希望メニューの選択</label>
-                        <select id="reserve-menu" required disabled>
-                            <option value="">日付を先に選択してください</option>
-                        </select>
-                    </div>
+        <div class="form-group">
+            <label for="tel">電話番号 <span style="color: red;">*</span></label>
+            <input type="tel" id="tel" name="電話番号" placeholder="090-1234-5678" required>
+        </div>
 
-                    <div class="form-group">
-                        <label for="reserve-guests">4. ご利用人数の選択</label>
-                        <select id="reserve-guests" required>
-                            <option value="1">1名</option>
-                            <option value="2" selected>2名</option>
-                            <option value="3">3名</option>
-                            <option value="4">4名</option>
-                            <option value="5">5名</option>
-                        </select>
-                    </div>
+        <div class="form-group">
+            <label for="email">メールアドレス</label>
+            <input type="email" id="email" name="メールアドレス" placeholder="yamada@example.com">
+        </div>
 
-                    <div class="form-group">
-                        <label for="user-name">5. お名前</label>
-                        <input type="text" id="user-name" placeholder="山田 太郎" required>
-                    </div>
+        <div class="form-group">
+            <label for="datetime">ご予約日時 <span style="color: red;">*</span></label>
+            <input type="datetime-local" id="datetime" name="ご予約日時" required>
+        </div>
 
-                    <div class="form-group">
-                        <label for="user-phone">6. 電話番号</label>
-                        <input type="tel" id="user-phone" placeholder="09012345678" required>
-                    </div>
+        <div class="form-group">
+            <label for="guests">ご利用人数 <span style="color: red;">*</span></label>
+            <select id="guests" name="ご利用人数" required>
+                <option value="" disabled selected>選択してください</option>
+                <option value="1名">1名</option>
+                <option value="2名">2名</option>
+                <option value="3名">3名</option>
+                <option value="4名">4名</option>
+                <option value="5名以上">5名以上</option>
+            </select>
+        </div>
 
-                    <div class="action-area">
-                        <button type="submit" id="btn-submit-reserve" class="btn btn-line">
-                            <svg class="line-icon" viewBox="0 0 24 24" width="20" height="20">
-                                <path fill="currentColor" d="M24 10.304c0-5.231-5.383-9.484-12-9.484s-12 4.253-12 9.484c0 4.69 4.27 8.625 10.046 9.362.392.085.926.258 1.061.593.122.3.08.77.039 1.074l-.173 1.041c-.052.312-.253 1.222 1.092.666 1.345-.556 7.241-4.264 9.882-7.298 2.302-2.484 3.073-4.834 3.073-6.438zm-15.422.955h-1.89c-.296 0-.537-.24-.537-.537v-3.053c0-.296.241-.537.537-.537s.537.241.537.537v2.516h1.353c.296 0 .537.241.537.537s-.241.537-.537.537zm2.417-.537c0 .296-.241.537-.537.537h-.002c-.296 0-.537-.241-.537-.537v-3.053c0-.296.241-.537.537-.537s.537.241.537.537v3.053zm3.766 0c0 .248-.168.463-.411.523-.042.01-.085.015-.127.015-.246 0-.462-.167-.518-.415l-.946-4.135-.008-.053v2.859c0 .296-.241.537-.537.537s-.241-.537-.537-.537v-3.053c0-.248.168-.463.411-.522.043-.01.085-.015.127-.015.247 0 .463.167.519.415l.946 4.136.008.052v-2.859c0-.296.241-.537.537-.537s.537.241.537.537v3.053zm3.228-1.074h-1.353v-.443h1.353c.296 0 .537-.241.537-.537s-.241-.537-.537-.537h-1.89c-.296 0-.537.241-.537.537v3.053c0 .296.241.537.537.537h1.89c.296 0 .537-.241.537-.537s-.241-.537-.537-.537z"/>
-                            </svg>
-                            LINE連携して予約を確定する
-                        </button>
-                    </div>
-                </form>
-            </section>
-        </main>
+        <div class="form-group">
+            <label for="comments">ご要望・備考欄</label>
+            <textarea id="comments" name="ご要望・備考" placeholder="アレルギーや、ご質問があれば入力してください。"></textarea>
+        </div>
+
+        <button type="submit" class="submit-btn">予約を確定する</button>
+    </form>
+    
+    <div class="footer-note">
+        ※ボタンを押すと予約内容がお店のGmail宛てに送信されます。
     </div>
-    <script src="js/reserve.js"></script>
+</div>
+
 </body>
 </html>
