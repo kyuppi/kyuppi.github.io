@@ -2,140 +2,39 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>オンライン予約・ご注文フォーム</title>
+    <title>予約・注文フォーム</title>
     <style>
-        :root {
-            --primary-color: #4a90e2;
-            --background-color: #f5f7fa;
-            --card-background: #ffffff;
-            --text-color: #333333;
-            --border-color: #e1e4e8;
-        }
-        body { font-family: 'Helvetica Neue', Arial, sans-serif; background-color: var(--background-color); color: var(--text-color); margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
-        .reservation-card { background: var(--card-background); padding: 30px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05); width: 100%; max-width: 500px; }
-        h2 { text-align: center; margin-top: 0; margin-bottom: 5px; color: #2c3e50; font-size: 24px; }
-        .subtitle { text-align: center; color: #7f8c8d; font-size: 14px; margin-bottom: 25px; }
-        .notice-banner { background-color: #fff3cd; border-left: 4px solid #ffc107; color: #856404; padding: 12px; margin-bottom: 20px; border-radius: 4px; font-size: 14px; font-weight: bold; display: none; }
-        .form-group { margin-bottom: 20px; }
-        label { display: block; margin-bottom: 8px; font-weight: bold; font-size: 14px; color: #555; }
-        input, select, textarea { width: 100%; padding: 12px; border: 1px solid var(--border-color); border-radius: 6px; font-size: 16px; box-sizing: border-box; }
-        textarea { resize: vertical; min-height: 100px; }
-        .submit-btn { width: 100%; background-color: var(--primary-color); color: white; border: none; padding: 14px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; }
-        .footer-note { text-align: center; font-size: 12px; color: #999; margin-top: 20px; }
+        body { font-family: sans-serif; padding: 20px; max-width: 500px; margin: auto; line-height: 1.6; }
+        .banner { background: #fff3cd; color: #856404; padding: 15px; border-left: 5px solid #ffc107; margin-bottom: 20px; display: none; font-weight: bold; }
+        input, select, button { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #ccc; border-radius: 6px; box-sizing: border-box; }
+        button { background: #007bff; color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:disabled { background: #ccc; }
     </style>
 </head>
 <body>
-
-<div class="reservation-card">
-    <h2>オンライン予約・ご注文</h2>
-    <div class="subtitle">24時間受付中</div>
-
-    <div id="holiday-notice" class="notice-banner">【重要】本日は臨時休業とさせていただきます。</div>
-    
+    <div id="holiday-banner" class="banner">【重要】本日は臨時休業のため、予約を受け付けておりません。</div>
+    <h2>予約・注文フォーム</h2>
     <form action="https://formsubmit.co/kyuppi000@gmail.com" method="POST">
-        <input type="hidden" name="_captcha" value="false">
-        <input type="hidden" name="_subject" value="【自動通知】新しい予約・注文の申し込みが入りました！">
-
-        <div class="form-group">
-            <label>お名前 *</label>
-            <input type="text" name="お名前" placeholder="山田 太郎" required>
-        </div>
-
-        <div class="form-group">
-            <label>電話番号 *</label>
-            <input type="tel" name="電話番号" placeholder="090-1234-5678" required>
-        </div>
-
-        <div class="form-group">
-            <label>メールアドレス</label>
-            <input type="email" name="メールアドレス" placeholder="yamada@example.com">
-        </div>
-
-        <div class="form-group">
-            <label>ご予約日時 *</label>
-            <input type="datetime-local" name="ご予約日時" required>
-        </div>
-
-        <div class="form-group">
-            <label>ご注文・ご予約内容 *</label>
-            <select id="order-select" name="注文・予約内容" required>
-                <option value="" disabled selected>選択してください</option>
-                <option value="コースA（通常プラン）" id="menu-A">コースA（通常プラン）</option>
-                <option value="コースB（プレミアムプラン）" id="menu-B">コースB（プレミアムプラン）</option>
-                <option value="席のみのご予約" id="menu-C">席のみのご予約</option>
-                </select>
-        </div>
-
-        <div class="form-group">
-            <label>ご利用人数 *</label>
-            <select name="ご利用人数" required>
-                <option value="" disabled selected>選択してください</option>
-                <option value="1名">1名</option>
-                <option value="2名">2名</option>
-                <option value="3名">3名</option>
-                <option value="4名">4名</option>
-                <option value="5名以上">5名以上</option>
-            </select>
-        </div>
-
-        <div class="form-group">
-            <label>ご要望・備考欄</label>
-            <textarea name="ご要望・備考" placeholder="アレルギーなどがあればご記入ください。"></textarea>
-        </div>
-
-        <button type="submit" class="submit-btn" id="submit-btn">予約・注文を確定する</button>
+        <input type="text" name="お名前" placeholder="お名前" required>
+        <select id="menu-select" name="メニュー" required></select>
+        <button type="submit" id="submit-btn">予約を確定する</button>
     </form>
-    
-    <div class="footer-note">※ボタンを押すと内容がお店のGmail宛てに送信されます。</div>
-</div>
 
-<script>
-    const BIN_ID = '6584289a0574da7622da443d'; 
-    
-    async function loadSettings() {
-        try {
-            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-                headers: { 'X-Master-Key': '$2a$10$wN9D9aJID76bN7N0/C6yUe0FwN7O.Z3VjUo88.ZqgY8S32eKeZJu6' }
-            });
-            const data = await res.json();
-            const status = data.record;
+    <script>
+        const BIN_ID = '6584289a0574da7622da443d';
+        const KEY = '$2a$10$wN9D9aJID76bN7N0/C6yUe0FwN7O.Z3VjUo88.ZqgY8S32eKeZJu6';
 
-            // 臨時休業の反映
-            if (status.isHoliday) {
-                document.getElementById('holiday-notice').style.display = 'block';
-                const btn = document.getElementById('submit-btn');
-                btn.disabled = true; btn.style.backgroundColor = '#ccc'; btn.innerText = 'ただいま休業中です';
-            }
-
-            // 初期メニューの売り切れ反映
-            if (status.soldOutA) { const m = document.getElementById('menu-A'); m.disabled = true; m.innerText += '（売り切れ）'; }
-            if (status.soldOutB) { const m = document.getElementById('menu-B'); m.disabled = true; m.innerText += '（売り切れ）'; }
-            if (status.soldOutC) { const m = document.getElementById('menu-C'); m.disabled = true; m.innerText += '（売り切れ）'; }
-
-            // 💡 追加メニューの読み込みと反映
-            const selectEl = document.getElementById('order-select');
-            if (status.customMenus && status.customMenus.length > 0) {
-                status.customMenus.forEach(menu => {
-                    const opt = document.createElement('option');
-                    opt.value = menu.name;
-                    opt.innerText = menu.name;
-                    if (menu.isSoldOut) {
-                        opt.disabled = true;
-                        opt.innerText += '（売り切れ）';
-                    }
-                    selectEl.appendChild(opt);
-                });
-            }
-            
-            // 最後に「その他」を一番下に配置
-            const extraOpt = document.createElement('option');
-            extraOpt.value = "その他（備考欄に記載）"; extraOpt.innerText = "その他（備考欄に記載）";
-            selectEl.appendChild(extraOpt);
-
-        } catch (e) { console.error("設定の読み込みに失敗しました", e); }
-    }
-    window.onload = loadSettings;
-</script>
+        async function load() {
+            const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {headers: {'X-Master-Key': KEY}});
+            const d = (await res.json()).record;
+            if(d.isHoliday) { document.getElementById('holiday-banner').style.display = 'block'; document.getElementById('submit-btn').disabled = true; }
+            let s = document.getElementById('menu-select');
+            const add = (name, sold) => s.innerHTML += `<option ${sold?'disabled':''}>${name}${sold?'（売り切れ）':''}</option>`;
+            add("コースA", d.soldOutA);
+            add("コースB", d.soldOutB);
+            d.customMenus.forEach(m => add(m.name, m.soldOut));
+        }
+        load();
+    </script>
 </body>
 </html>
